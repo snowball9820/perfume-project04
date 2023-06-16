@@ -1,5 +1,11 @@
 package com.app.perfume_project04;
 
+import android.widget.ImageView;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+
 public class StringParser {
 
     public ParsedData parse(String text) {
@@ -40,6 +46,15 @@ public class StringParser {
         }
 
         return parsedData;
+    }
+
+    public void loadPerfumeImage(String imageUrl, ImageView imageView) {
+        RequestOptions requestOptions = new RequestOptions()
+                .diskCacheStrategy(DiskCacheStrategy.ALL);
+        Glide.with(imageView.getContext())
+                .load(imageUrl)
+                .apply(requestOptions)
+                .into(imageView);
     }
 
 }

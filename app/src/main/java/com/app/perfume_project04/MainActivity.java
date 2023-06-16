@@ -1,6 +1,5 @@
 package com.app.perfume_project04;
 
-import static com.google.android.gms.common.internal.ImagesContract.URL;
 
 import android.os.Bundle;
 import android.view.View;
@@ -36,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private Button searchButton;
     private TextView textView;
 
+    private StringParser stringParser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,19 +47,7 @@ public class MainActivity extends AppCompatActivity {
         searchButton = findViewById(R.id.searchButton);
         textView = findViewById(R.id.textView);
 
-        // 서버 응답을 파싱하여 ParsedData 객체 생성
-        ParsedData parsedData = parseServerResponse();
 
-        // 이미지 URL 가져오기
-        String imageUrl = parsedData.getUrl();
-
-        // Glide를 사용하여 이미지 로드 및 표시
-        RequestOptions requestOptions = new RequestOptions()
-                .diskCacheStrategy(DiskCacheStrategy.ALL); // 디스크 캐시 사용
-        Glide.with(this)
-                .load(imageUrl)
-                .apply(requestOptions)
-                .into(imageView);
 
         // 검색 버튼 클릭 이벤트 리스너 설정
         searchButton.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 MediaType mediaType = MediaType.parse("application/json; charset=utf-8");
                 RequestBody requestBody = RequestBody.create(jsonBody, mediaType);
                 Request request = new Request.Builder()
-                        .url("http://172.30.1.3:5000/")
+                        .url("http://172.30.1.54:5000/")
                         .post(requestBody)
                         .build();
 
@@ -113,21 +102,31 @@ public class MainActivity extends AppCompatActivity {
                             // 응답 실패 처리
                         }
                     }
+
                 });
+
+
+                searchButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        StringParser stringParser = new StringParser();
+                        ParsedData parsedData = new ParsedData();
+
+                        String imageUrl = parsedData.getUrl();
+
+                        RequestOptions requestOptions = new RequestOptions()
+                                .diskCacheStrategy(DiskCacheStrategy.ALL);
+                        Glide.with(MainActivity.this)
+                                .load(imageUrl)
+                                .apply(requestOptions)
+                                .into(imageView);
+                    }
+                });
+
             }
         });
     }
 
-    private ParsedData parseServerResponse() {
-        // 서버 응답 파싱 로직 구현
-        // ...
-
-        // 예시로 ParsedData 객체 생성하여 반환
-        ParsedData parsedData = new ParsedData();
-        parsedData.setUrl("https://static.luckyscent.com/images/products/37401.jpg?width=400&404=product.png\n");
-        // ...
-
-        return parsedData;
-    }
 
 }
